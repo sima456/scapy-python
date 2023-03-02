@@ -1,0 +1,15 @@
+from scapy.all import *
+
+# Define a callback function to handle each captured packet
+def packet_handler(packet):
+    if packet.haslayer(UDP):
+        udp = packet[UDP]
+        if udp.haslayer(IP):
+            ip = udp[IP]
+            if ip.flags & 0x02:
+                print("Malicious packet detected!")
+            else:
+                print("Packet OK")
+
+# Sniff on the default interface for UDP packets
+sniff(filter="udp", prn=packet_handler)
